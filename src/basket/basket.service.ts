@@ -5,59 +5,70 @@ import {
   GetTotalPriceResponse,
   ListProductsInBasketResponse,
 } from 'src/interfaces/basket';
+import { ShopItem } from 'src/shop/shop-item.entity';
 import { ShopService } from 'src/shop/shop.service';
 import { AddProductDto } from './dto/add-product.dto';
+import { ItemInBasket } from './item-in-basket.entity';
 
 @Injectable()
 export class BasketService {
-  private items: AddProductDto[] = [];
-
   constructor(@Inject(ShopService) private shopService: ShopService) {}
 
-  async add(item: AddProductDto): Promise<AddProductToBasketResponse> {
-    const { name, count } = item;
+  async add(product: AddProductDto): Promise<AddProductToBasketResponse> {
+    const { id, count } = product;
+
+    const shopItem = await this.shopService.getOneItem(id);
     if (
-      typeof name !== 'string' ||
-      typeof count !== 'number' ||
-      name === '' ||
+      typeof id !== 'string' ||
+      typeof id !== 'number' ||
+      id === '' ||
       count < 1 ||
-      !(await this.shopService.hasItem(name))
+      !shopItem
     ) {
       return {
         isSuccess: false,
       };
     }
-    this.items.push(item);
+    const item = new ItemInBasket();
+    item.count = count;
+
+    await item.save();
+
+    item.shopItem = shopItem;
+
+    await item.save();
 
     return {
       isSuccess: true,
-      index: this.items.length - 1,
+      id: item.id,
     };
   }
 
-  remove(index: number): RemoveProductFromBasketResonse {
-    const { items } = this;
-    if (index < 0 || index >= items.length) {
-      return { isSuccess: false };
+  async remove(id: string): Promise<RemoveProductFromBasketResonse> {
+    const item = await ItemInBasket.findOne(id);
+
+    if (item) {
+      await item.remove();
+      return { isSuccess: true };
     }
-    items.splice(index, 1);
-
-    return {
-      isSuccess: true,
-    };
+    return { isSuccess: false };
   }
-  list(): ListProductsInBasketResponse {
-    return this.items;
+
+  async list(): Promise<ListProductsInBasketResponse> {
+    return ItemInBasket.find({
+      relations: ['shopItem'],
+    });
   }
 
   async getTotalPrice(): Promise<GetTotalPriceResponse> {
-    return (
-      await Promise.all(
-        this.items.map(
-          async (item) =>
-            (await this.shopService.getPrice(item.name)) * item.count * 1.23,
-        ),
-      )
-    ).reduce((prev, curr) => prev + curr, 0);
+    const items = await this.list();
+    console.log('ITEMS: ', items);
+    // return (
+    //   await Promise.all(
+    //     items.map(async (item) => item.shopItem.price * item.count * 1.23),
+    //   )
+    // ).reduce((prev, curr) => prev + curr, 0);
+
+    return 5;
   }
 }

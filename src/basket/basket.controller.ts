@@ -18,7 +18,7 @@ export class BasketController {
   }
 
   @Get('/')
-  listProductsInBasket(): ListProductsInBasketResponse {
+  listProductsInBasket(): Promise<ListProductsInBasketResponse> {
     return this.basketService.list();
   }
 
