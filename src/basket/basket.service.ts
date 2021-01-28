@@ -16,11 +16,11 @@ export class BasketService {
 
   async add(product: AddProductDto): Promise<AddProductToBasketResponse> {
     const { id, count } = product;
-
     const shopItem = await this.shopService.getOneItem(id);
+
     if (
       typeof id !== 'string' ||
-      typeof id !== 'number' ||
+      typeof count !== 'number' ||
       id === '' ||
       count < 1 ||
       !shopItem
@@ -60,14 +60,19 @@ export class BasketService {
     });
   }
 
+  async clearBasket() {
+    await ItemInBasket.delete({});
+  }
+
   async getTotalPrice(): Promise<GetTotalPriceResponse> {
     const items = await this.list();
-    console.log('ITEMS: ', items);
-    // return (
-    //   await Promise.all(
-    //     items.map(async (item) => item.shopItem.price * item.count * 1.23),
-    //   )
-    // ).reduce((prev, curr) => prev + curr, 0);
+
+    return (
+      await Promise.all(
+        //@ts-ignore
+        items.map(async (item) => item.shopItem.price * item.count * 1.23),
+      )
+    ).reduce((prev, curr) => prev + curr, 0);
 
     return 5;
   }

@@ -1,10 +1,19 @@
-import { Body, Controller, Inject, Post, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Inject,
+  Post,
+  Get,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { BasketService } from './basket.service';
 import { AddProductDto } from './dto/add-product.dto';
 import {
   AddProductToBasketResponse,
   ListProductsInBasketResponse,
   GetTotalPriceResponse,
+  RemoveProductFromBasketResonse,
 } from 'src/interfaces/basket';
 
 @Controller('basket')
@@ -25,5 +34,17 @@ export class BasketController {
   @Get('/total-price')
   getTotalPrice(): Promise<GetTotalPriceResponse> {
     return this.basketService.getTotalPrice();
+  }
+
+  @Delete('/all')
+  clearBasket() {
+    return this.basketService.clearBasket();
+  }
+
+  @Delete('/:id')
+  removeProduct(
+    @Param('id') id: string,
+  ): Promise<RemoveProductFromBasketResonse> {
+    return this.basketService.remove(id);
   }
 }
