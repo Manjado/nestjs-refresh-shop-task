@@ -4,10 +4,13 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AddProductDto } from './dto/add-product.dto';
+import { User } from 'src/user/user.entity';
 
 @Entity()
 export class ItemInBasket extends BaseEntity implements AddProductDto {
@@ -17,7 +20,11 @@ export class ItemInBasket extends BaseEntity implements AddProductDto {
   @Column()
   count: number;
 
-  @OneToOne((type) => ShopItem, (entity) => entity.itemInBasket)
+  @ManyToOne((type) => ShopItem, (entity) => entity.itemsInBasket)
   @JoinColumn()
   shopItem: ShopItem;
+
+  @ManyToOne((type) => User, (entity) => entity.itemsInBasket)
+  @JoinColumn()
+  user: User;
 }

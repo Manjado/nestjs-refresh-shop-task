@@ -73,7 +73,5 @@ export class BasketService {
         items.map(async (item) => item.shopItem.price * item.count * 1.23),
       )
     ).reduce((prev, curr) => prev + curr, 0);
-
-    return 5;
   }
 }
