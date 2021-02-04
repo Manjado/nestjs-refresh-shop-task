@@ -13,7 +13,7 @@ import { AddProductDto } from './dto/add-product.dto';
 import { User } from 'src/user/user.entity';
 
 @Entity()
-export class ItemInBasket extends BaseEntity implements AddProductDto {
+export class ItemInBasket extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

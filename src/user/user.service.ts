@@ -11,4 +11,8 @@ export class UserService {
     await user.save();
     return user;
   }
+
+  async getOneUser(id: string): Promise<User> {
+    return await User.findOne(id);
+  }
 }

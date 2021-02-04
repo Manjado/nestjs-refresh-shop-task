@@ -11,8 +11,13 @@ export interface RemoveProductFromBasketResonse {
   isSuccess: boolean;
 }
 
+interface OneItemInBasket {
+  id: string;
+  count: number;
+}
+
 export type GetTotalPriceResponse =
   | number
   | { isSuccess: false; alternativeBasket: AddProductDto[] };
 
-export type ListProductsInBasketResponse = AddProductDto[];
+export type ListProductsInBasketResponse = OneItemInBasket[];
