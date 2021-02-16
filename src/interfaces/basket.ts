@@ -21,3 +21,8 @@ export type GetTotalPriceResponse =
   | { isSuccess: false; alternativeBasket: AddProductDto[] };
 
 export type ListProductsInBasketResponse = OneItemInBasket[];
+
+export interface GetBasketStatsResponse {
+  itemInBasketAvgPrice: number;
+  basketAvgTotalPrice: number;
+}

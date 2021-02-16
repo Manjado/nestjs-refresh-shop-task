@@ -14,6 +14,7 @@ import {
   ListProductsInBasketResponse,
   GetTotalPriceResponse,
   RemoveProductFromBasketResonse,
+  GetBasketStatsResponse,
 } from 'src/interfaces/basket';
 
 @Controller('basket')
@@ -24,6 +25,16 @@ export class BasketController {
     @Body() item: AddProductDto,
   ): Promise<AddProductToBasketResponse> {
     return this.basketService.add(item);
+  }
+
+  @Get('/admin')
+  getBasketFromAdmin(): Promise<ListProductsInBasketResponse> {
+    return this.basketService.getAllForAdmin();
+  }
+
+  @Get('/stats')
+  getStats(): Promise<GetBasketStatsResponse> {
+    return this.basketService.getStats();
   }
 
   @Get('/:userId')
